@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation : Statistiques 3ème</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #2c3e50;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            background: white;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 4px solid #9b59b6;
+            padding-bottom: 15px;
+            margin-top: 0;
+            font-size: 2.2em;
+        }
+        .step-panel {
+            display: none;
+        }
+        .step-panel.active {
+            display: block;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        input[type="text"] {
+            border: 3px solid #bdc3c7;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #9b59b6;
+        }
+        
+        .consigne {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+            line-height: 1.5;
+            background: #f5f3f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #9b59b6;
+        }
+        
+        .serie-container {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px dashed #9b59b6;
+            text-align: center;
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .serie-title {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .values-list {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            letter-spacing: 2px;
+        }
+
+        .stat-table {
+            border-collapse: collapse;
+            margin: 10px auto;
+            font-size: 1.2em;
+            min-width: 300px;
+        }
+        .stat-table th, .stat-table td {
+            border: 2px solid #cbd5e1;
+            padding: 12px 20px;
+            text-align: center;
+        }
+        .stat-table th {
+            background-color: #f1f5f9;
+            font-weight: bold;
+        }
+        
+        .answer-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .input-answer {
+            width: 250px;
+            height: 60px;
+            font-size: 2em !important;
+            font-weight: bold;
+            text-align: center;
+            border-width: 3px !important;
+            border-color: #9b59b6 !important;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        button.action-btn {
+            flex: 1;
+            padding: 16px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-start { background-color: #9b59b6; color: white; width: 100%; padding: 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.2em;}
+        .btn-start:hover { background-color: #8e44ad; }
+        .btn-submit { background-color: #2ecc71; color: white; }
+        .btn-submit:hover { background-color: #27ae60; }
+        .btn-skip { background-color: #94a3b8; color: white; }
+        .btn-skip:hover { background-color: #64748b; }
+        
+        .progress-bar {
+            background-color: #e2e8f0;
+            border-radius: 6px;
+            height: 12px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background-color: #9b59b6;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .indicator {
+            text-align: right;
+            font-size: 1.1em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .result-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 6px solid #9b59b6;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        
+        table.bilan {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+        table.bilan th, table.bilan td {
+            border: 1px solid #cbd5e1;
+            padding: 14px;
+            text-align: center;
+        }
+        table.bilan th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+        .row-correct { background-color: #dcfce7; color: #14532d; }
+        .row-incorrect { background-color: #fee2e2; color: #7f1d1d; }
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        .badge-success { background-color: #2ecc71; color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>Évaluation : Statistiques (Niveau 3ème)</h1>
+
+    <!-- ÉTAPE 1 : Inscription -->
+    <div id="panel-login" class="step-panel active">
+        <label for="student-name">Prénom et Nom de l'élève :</label>
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="student-name" style="width:100%; height:50px; font-size:1.2em; padding:10px; box-sizing:border-box;" placeholder="Ex: Chloé Dubois">
+        </div>
+        <button class="btn-start" onclick="startTest()">Commencer l'évaluation (10 questions)</button>
+    </div>
+
+    <!-- ÉTAPE 2 : Exercices -->
+    <div id="panel-quiz" class="step-panel">
+        <div class="indicator">Question <span id="current-q">1</span> / 10</div>
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        
+        <div class="consigne" id="q-consigne">...</div>
+        
+        <div class="serie-container">
+            <div class="serie-title" id="q-context">...</div>
+            <div id="q-values-container"></div>
+        </div>
+        
+        <div class="answer-zone">
+            <label id="label-reponse" for="ans-value" style="font-size: 1.2em;">Écris ton résultat ci-dessous :</label>
+            <input type="text" id="ans-value" class="input-answer" autocomplete="off">
+        </div>
+        
+        <div class="btn-group">
+            <button class="action-btn btn-skip" onclick="skipQuestion()">Passer</button>
+            <button class="action-btn btn-submit" onclick="submitAnswer()">Valider la réponse</button>
+        </div>
+    </div>
+
+    <!-- ÉTAPE 3 : Bilan -->
+    <div id="panel-results" class="step-panel">
+        <div class="result-box">
+            <p><strong>Élève :</strong> <span id="res-name">...</span></p>
+            <p><strong>Score :</strong> <span id="res-grade" style="font-size: 2.5em; color: #27ae60; font-weight: bold;">0 / 10</span></p>
+        </div>
+
+        <h3 style="margin-top:30px; color:#2c3e50; border-bottom:3px solid #cbd5e1; padding-bottom:8px; font-size:1.4em;">Correction détaillée</h3>
+        <table class="bilan">
+            <thead>
+                <tr>
+                    <th>Type de calcul</th>
+                    <th>Série statistique</th>
+                    <th>Ta réponse</th>
+                    <th>Correction / Méthode</th>
+                </tr>
+            </thead>
+            <tbody id="bilan-table-body">
+            </tbody>
+        </table>
+
+        <button class="btn-start" style="margin-top: 40px;" onclick="location.reload()">Refaire une autre évaluation</button>
+    </div>
+
+    <script>
+        let quizQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let studentName = "";
+        let isQuizActive = false;
+
+        // Fonction de nettoyage ultra-robuste qui harmonise la saisie de l'élève
+        function clean(str) {
+            let cleanStr = str.trim().replace(/\s+/g, '').replace(',', '.').replace('%', '');
+            const num = parseFloat(cleanStr);
+            return isNaN(num) ? cleanStr : num.toString();
+        }
+
+        function formatFR(num) {
+            return num.toString().replace('.', ',');
+        }
+
+        // Génère une série statistique et s'assure qu'elle n'est pas déjà ordonnée
+        function generateSerie(size, min, max) {
+            let arr = [];
+            for (let i = 0; i < size; i++) {
+                arr.push(Math.floor(Math.random() * (max - min + 1)) + min);
+            }
+            const isSorted = arr.every((val, i, arr) => !i || val >= arr[i - 1]);
+            if (isSorted && size > 2) {
+                arr.sort(() => 0.5 - Math.random());
+            }
+            return arr;
+        }
+
+        function buildQuiz() {
+            quizQuestions = [];
+
+            const contexts = [
+                "Notes obtenues par un groupe d'élèves lors d'un devoir :",
+                "Températures relevées à midi dans une ville (°C) :",
+                "Nombre d'heures passées sur les écrans par jour pour un groupe d'ados :",
+                "Tailles mesurées sur de jeunes plants de tomates (en cm) :",
+                "Nombre de paniers marqués par un joueur de basket lors de ses derniers matchs :"
+            ];
+
+            // Répartition équitable des 6 notions requises au brevet
+            let pool = [
+                "moyenne", "moyenne", 
+                "moyenne_ponderee", "moyenne_ponderee",
+                "mediane_impair", "mediane_pair", 
+                "frequence", "frequence",
+                "etendue", "etendue"
+            ];
+            pool = pool.sort(() => 0.5 - Math.random());
+
+            for (let i = 0; i < 10; i++) {
+                const type = pool[i];
+                const context = contexts[Math.floor(Math.random() * contexts.length)];
+                
+                if (type === "moyenne") {
+                    const size = Math.floor(Math.random() * 3) + 5; // 5 à 7 valeurs
+                    const serie = generateSerie(size, 8, 18);
+                    const sum = serie.reduce((a, b) => a + b, 0);
+                    const rawMoyenne = sum / size;
+                    const roundedMoyenne = Math.round(rawMoyenne * 10) / 10;
+                    
+                    quizQuestions.push({
+                        type: "Moyenne simple",
+                        context: context,
+                        isTable: false,
+                        displaySerie: serie.join(" ; "),
+                        consigne: "Calcule la moyenne de cette série. Arrondis au dixième si nécessaire.",
+                        correctValue: formatFR(roundedMoyenne),
+                        correctValueAlternative: formatFR(roundedMoyenne.toFixed(1)),
+                        explanation: `Somme = ${sum}, Effectif total = ${size}.<br>Calcul : ${sum} ÷ ${size} ≈ <strong>${formatFR(roundedMoyenne)}</strong>`
+                    });
+
+                } else if (type === "moyenne_ponderee") {
+                    const numValues = Math.floor(Math.random() * 2) + 3; // 3 ou 4 valeurs distinctes
+                    let valeurs = [];
+                    while (valeurs.length < numValues) {
+                        let val = Math.floor(Math.random() * 8) + 8; // valeurs entre 8 et 15
+                        if (!valeurs.includes(val)) valeurs.push(val);
+                    }
+                    valeurs.sort((a, b) => a - b);
+                    
+                    let effectifs = [];
+                    for (let j = 0; j < numValues; j++) {
+                        effectifs.push(Math.floor(Math.random() * 4) + 1); // effectif de 1 à 4
+                    }
+
+                    let sumProducts = 0;
+                    let totalEffectif = 0;
+                    let tableHTML = `<table class="stat-table"><tr><th>Valeur</th>`;
+                    valeurs.forEach(v => { tableHTML += `<td>${v}</td>`; });
+                    tableHTML += `</tr><tr><th>Effectif</th>`;
+                    effectifs.forEach((eff, idx) => { 
+                        tableHTML += `<td>${eff}</td>`; 
+                        sumProducts += valeurs[idx] * eff;
+                        totalEffectif += eff;
+                    });
+                    tableHTML += `</tr></table>`;
+
+                    const rawMoyenne = sumProducts / totalEffectif;
+                    const roundedMoyenne = Math.round(rawMoyenne * 10) / 10;
+                    let detailsCalcul = valeurs.map((v, idx) => `(${v}×${effectifs[idx]})`).join(" + ");
+
+                    quizQuestions.push({
+                        type: "Moyenne pondérée",
+                        context: "Voici le tableau des effectifs d'une série statistique :",
+                        isTable: true,
+                        displaySerie: tableHTML,
+                        consigne: "Calcule la moyenne pondérée de cette série. Arrondis au dixième si nécessaire.",
+                        correctValue: formatFR(roundedMoyenne),
+                        correctValueAlternative: formatFR(roundedMoyenne.toFixed(1)),
+                        explanation: `Somme pondérée = ${detailsCalcul} = ${sumProducts}.<br>Effectif total = ${totalEffectif}.<br>Calcul : ${sumProducts} ÷ ${totalEffectif} ≈ <strong>${formatFR(roundedMoyenne)}</strong>`
+                    });
+
+                } else if (type === "mediane_impair") {
+                    const size = [5, 7, 9][Math.floor(Math.random() * 3)];
+                    const serie = generateSerie(size, 5, 20);
+                    const sorted = [...serie].sort((a, b) => a - b);
+                    const middleIndex = Math.floor(size / 2);
+                    const mediane = sorted[middleIndex];
+
+                    quizQuestions.push({
+                        type: "Médiane (Effectif impair)",
+                        context: context,
+                        isTable: false,
+                        displaySerie: serie.join(" ; "),
+                        consigne: "Détermine la médiane de cette série.",
+                        correctValue: mediane.toString(),
+                        explanation: `Série ordonnée : ${sorted.join(" ≤ ")}.<br>L'effectif total est de ${size} (impair). La valeur centrale est la ${(middleIndex + 1)}ème, soit <strong>${mediane}</strong>.`
+                    });
+
+                } else if (type === "mediane_pair") {
+                    const size = [6, 8][Math.floor(Math.random() * 2)];
+                    const serie = generateSerie(size, 6, 20);
+                    const sorted = [...serie].sort((a, b) => a - b);
+                    const m1 = sorted[(size / 2) - 1];
+                    const m2 = sorted[size / 2];
+                    const mediane = (m1 + m2) / 2;
+
+                    quizQuestions.push({
+                        type: "Médiane (Effectif pair)",
+                        context: context,
+                        isTable: false,
+                        displaySerie: serie.join(" ; "),
+                        consigne: "Détermine la médiane de cette série.",
+                        correctValue: formatFR(mediane),
+                        explanation: `Série ordonnée : ${sorted.join(" ≤ ")}.<br>L'effectif total est de ${size} (pair). On fait la moyenne des deux valeurs centrales (${m1} et ${m2}) : (${m1} + ${m2}) ÷ 2 = <strong>${formatFR(mediane)}</strong>.`
+                    });
+
+                } else if (type === "frequence") {
+                    const size = [8, 10, 12, 15][Math.floor(Math.random() * 4)];
+                    const serie = generateSerie(size, 10, 15);
+                    const target = serie[Math.floor(Math.random() * size)];
+                    const count = serie.filter(x => x === target).length;
+                    const rawFreq = (count / size) * 100;
+                    const freqRounded = Math.round(rawFreq);
+
+                    quizQuestions.push({
+                        type: "Fréquence (%)",
+                        context: context,
+                        isTable: false,
+                        displaySerie: serie.join(" ; "),
+                        consigne: `Calcule la fréquence de la valeur [ ${target} ] dans cette série. Donne ta réponse en % (arrondie à l'unité).`,
+                        correctValue: freqRounded.toString(),
+                        explanation: `La valeur ${target} apparaît ${count} fois sur un effectif total de ${size}.<br>Calcul : (${count} ÷ ${size}) × 100 ≈ <strong>${freqRounded} %</strong>.`
+                    });
+
+                } else if (type === "etendue") {
+                    const size = Math.floor(Math.random() * 4) + 5; 
+                    const serie = generateSerie(size, 3, 25);
+                    const minVal = Math.min(...serie);
+                    const maxVal = Math.max(...serie);
+                    const etendue = maxVal - minVal;
+
+                    quizQuestions.push({
+                        type: "Étendue",
+                        context: context,
+                        isTable: false,
+                        displaySerie: serie.join(" ; "),
+                        consigne: "Calcule l'étendue de cette série statistique.",
+                        correctValue: etendue.toString(),
+                        explanation: `Valeur maximale = ${maxVal}, Valeur minimale = ${minVal}.<br>Calcul : ${maxVal} − ${minVal} = <strong>${etendue}</strong>.`
+                    });
+                }
+            }
+        }
+
+        function startTest() {
+            const nameInput = document.getElementById("student-name").value.trim();
+            if (nameInput === "") {
+                alert("Veuillez entrer ton prénom et ton nom.");
+                return;
+            }
+            studentName = nameInput;
+            buildQuiz();
+            isQuizActive = true;
+            showPanel("panel-quiz");
+            loadQuestion();
+        }
+
+        function showPanel(panelId) {
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= 10) {
+                endTest();
+                return;
+            }
+
+            const q = quizQuestions[currentIndex];
+            document.getElementById("current-q").innerText = currentIndex + 1;
+            document.getElementById("q-consigne").innerText = q.consigne;
+            document.getElementById("q-context").innerText = q.context;
+            
+            const container = document.getElementById("q-values-container");
+            if (q.isTable) {
+                container.innerHTML = q.displaySerie;
+            } else {
+                container.innerHTML = `<div class="values-list">${q.displaySerie}</div>`;
+            }
+            
+            document.getElementById("ans-value").value = "";
+            document.getElementById("ans-value").focus();
+            
+            const progress = (currentIndex / 10) * 100;
+            document.getElementById("progress-fill").style.width = progress + "%";
+        }
+
+        function submitAnswer() {
+            const q = quizQuestions[currentIndex];
+            const userAns = document.getElementById("ans-value").value;
+            
+            if (userAns.trim() === "") {
+                alert("N'oublie pas d'entrer ta réponse.");
+                return;
+            }
+
+            const cleanedUser = clean(userAns);
+            const cleanedCorrect = clean(q.correctValue);
+            
+            let isCorrect = (cleanedUser === cleanedCorrect);
+            
+            if (!isCorrect && q.correctValueAlternative) {
+                isCorrect = (cleanedUser === clean(q.correctValueAlternative));
+            }
+
+            q.savedDisplay = userAns.trim();
+            q.isCorrect = isCorrect;
+            
+            if (isCorrect) score++;
+
+            currentIndex++;
+            loadQuestion();
+        }
+
+        function skipQuestion() {
+            const q = quizQuestions[currentIndex];
+            q.isCorrect = false;
+            q.savedDisplay = "<span style='color:#64748b;'>Passée</span>";
+            currentIndex++;
+            loadQuestion();
+        }
+
+        function endTest() {
+            isQuizActive = false;
+            showPanel("panel-results");
+            document.getElementById("res-name").innerText = studentName;
+            document.getElementById("res-grade").innerText = `${score} / 10`;
+            
+            if (score >= 8) document.getElementById("res-grade").style.color = "#2ecc71";
+            else if (score >= 5) document.getElementById("res-grade").style.color = "#e67e22";
+            else document.getElementById("res-grade").style.color = "#e74c3c";
+
+            const tableBody = document.getElementById("bilan-table-body");
+            tableBody.innerHTML = ""; 
+
+            quizQuestions.forEach(q => {
+                const row = document.createElement("tr");
+                row.className = q.isCorrect ? "row-correct" : "row-incorrect";
+
+                const correctBadge = q.isCorrect 
+                    ? '<span class="badge badge-success">Juste !</span>' 
+                    : `<strong>Correction :</strong> ${formatFR(q.correctValue)}${q.type.includes("Fréquence") ? ' %' : ''}`;
+
+                row.innerHTML = `
+                    <td><strong>${q.type}</strong></td>
+                    <td style="font-size:1.1em; color:#334155;">
+                        <em>${q.context}</em><br>
+                        ${q.isTable ? q.displaySerie : `<strong>${q.displaySerie}</strong>`}
+                    </td>
+                    <td style="font-size:1.2em; font-weight:bold;">${q.savedDisplay}</td>
+                    <td style="text-align:left; font-size:0.95em;">
+                        <div style="margin-bottom:8px;">${correctBadge}</div>
+                        <div style="border-top:1px dashed #cbd5e1; padding-top:5px; font-size:0.9em; color:#475569;">
+                            ${q.explanation}
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Alerte si l'élève essaie d'actualiser ou de quitter par mégarde pendant le test
+        window.addEventListener("beforeunload", function (e) {
+            if (isQuizActive) {
+                e.preventDefault();
+                e.returnValue = "Attention, si vous actualisez, votre progression sera perdue.";
+            }
+        });
+
+        document.getElementById("ans-value").addEventListener("keyup", function(e) { 
+            if (e.key === "Enter") submitAnswer(); 
+        });
+    </script>
+</body>
+</html>
